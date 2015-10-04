@@ -13,13 +13,13 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("displayId")]
         public uint DisplayId;
 
-        [DBFieldName("name")]
+        [DBFieldName("name", LocaleConstant.enUS)] // ToDo: Added locale support
         public string Name;
 
         [DBFieldName("IconName")]
         public string IconName;
 
-        [DBFieldName("castBarCaption")]
+        [DBFieldName("castBarCaption", LocaleConstant.enUS)] // ToDo: Added locale support
         public string CastCaption;
 
         [DBFieldName("unk1")]
@@ -28,7 +28,7 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("size")]
         public float Size;
 
-        [DBFieldName("questItem", 6)]
+        [DBFieldName("questItem", ClientVersionBuild.Zero, ClientVersionBuild.V6_0_2_19033, 6)]
         public uint[] QuestItems;
 
         [DBFieldName("Data", ClientVersionBuild.Zero, ClientVersionBuild.V4_0_1_13164, 24, true)]

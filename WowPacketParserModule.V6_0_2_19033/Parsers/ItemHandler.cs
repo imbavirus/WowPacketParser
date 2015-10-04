@@ -28,8 +28,8 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             if (hasModifications)
             {
                 var mask = packet.ReadUInt32();
-                for (var j = 1; j <= 8; ++j)
-                    if ((mask & (1u << (j - 1))) != 0)
+                for (var j = 0; mask != 0; mask >>= 1, ++j)
+                    if ((mask & 1) != 0)
                         packet.ReadInt32(((ItemModifier)j).ToString(), indexes);
             }
 
@@ -339,9 +339,12 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
 
             ReadItemInstance(packet);
 
-            packet.ReadUInt32("WodUnk");
+            packet.ReadUInt32("QuestLogItemID");
             packet.ReadUInt32("Quantity");
             packet.ReadUInt32("QuantityInInventory");
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V6_2_0_20173))
+                packet.ReadInt32("DungeonEncounterID");
+
             packet.ReadUInt32("BattlePetBreedID");
             packet.ReadUInt32("BattlePetBreedQuality");
             packet.ReadUInt32("BattlePetSpeciesID");
@@ -352,9 +355,11 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             packet.ResetBitReader();
 
             packet.ReadBit("Pushed");
-            packet.ReadBit("DisplayText");
             packet.ReadBit("Created");
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V6_2_0_20173))
+                packet.ReadBits("DisplayText", 2);
             packet.ReadBit("IsBonusRoll");
+            packet.ReadBit("IsEncounterLoot");
         }
 
         [Parser(Opcode.SMSG_SELL_RESPONSE)]
@@ -401,6 +406,12 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             packet.ReadBit("Disable");
         }
 
+        [Parser(Opcode.CMSG_BUY_REAGENT_BANK)]
+        public static void HandleReagentBankBuy(Packet packet)
+        {
+            packet.ReadPackedGuid128("Banker");
+        }
+
         [Parser(Opcode.CMSG_DEPOSIT_REAGENT_BANK)]
         public static void HandleReagentBankDeposit(Packet packet)
         {
@@ -412,6 +423,9 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
         {
             packet.ReadPackedGuid128("ItemGuid");
             packet.ReadInt32("SpellID");
+
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V6_2_0_20173))
+                packet.ReadInt32("Duration");
         }
 
         [Parser(Opcode.SMSG_CROSSED_INEBRIATION_THRESHOLD)]
@@ -464,6 +478,12 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
 
             packet.ReadPackedGuid128("Id");
             ReadCliItemTextCache(packet, "Item");
+        }
+
+        [Parser(Opcode.CMSG_WRAP_ITEM)]
+        public static void HandleWrapItem(Packet packet)
+        {
+            ReadInvUpdate(packet, "InvUpdate");
         }
     }
 }

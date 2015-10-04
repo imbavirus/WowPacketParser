@@ -48,13 +48,13 @@ namespace WowPacketParser.Store.Objects
         public int QuestObjectID;
 
         [DBFieldName("MapID")]
-        public uint MapID;
+        public int MapID;
 
         [DBFieldName("WorldMapAreaId")]
-        public uint WorldMapAreaId;
+        public int WorldMapAreaId;
 
         [DBFieldName("Floor")]
-        public uint Floor;
+        public int Floor;
 
         [DBFieldName("Priority")]
         public int Priority;
@@ -73,8 +73,5 @@ namespace WowPacketParser.Store.Objects
 
         [DBFieldName("VerifiedBuild")]
         public int VerifiedBuild = ClientVersion.BuildInt;
-
-        public uint Idx;
-        public Dictionary<QuestPOIPoint, uint> Points;
     }
 }

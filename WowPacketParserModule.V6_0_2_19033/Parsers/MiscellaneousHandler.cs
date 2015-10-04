@@ -6,6 +6,7 @@ using WowPacketParser.Store.Objects;
 using CoreParsers = WowPacketParser.Parsing.Parsers;
 using TutorialAction610 = WowPacketParser.Enums.Version.V6_1_0_19678.TutorialAction;
 using TutorialAction612 = WowPacketParser.Enums.Version.V6_1_2_19802.TutorialAction;
+using TutorialAction620 = WowPacketParser.Enums.Version.V6_2_0_20173.TutorialAction;
 
 namespace WowPacketParserModule.V6_0_2_19033.Parsers
 {
@@ -75,6 +76,9 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
                 packet.ReadBit("CommerceSystemEnabled");
                 packet.ReadBit("Unk14");
                 packet.ReadBit("WillKickFromWorld");
+                if (ClientVersion.AddedInVersion(ClientVersionBuild.V6_2_2_20444))
+                    packet.ReadBit("IsExpansionPreorderInStore");
+
                 packet.ReadInt32("TokenPollTimeSeconds");
                 packet.ReadInt32E<ConsumableTokenRedeem>("TokenRedeemIndex");
             }
@@ -130,7 +134,7 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             packet.ReadBit("CharUndeleteEnabled");
             packet.ReadBit("RestrictedAccount");
             packet.ReadBit("TutorialsEnabled");
-            packet.ReadBit("Unk bit90"); // Also tutorials related
+            packet.ReadBit("NPETutorialsEnabled");
 
             if (hasEuropaTicketSystemStatus)
                 ReadCliEuropaTicketConfig(packet, "EuropaTicketSystemStatus");
@@ -166,10 +170,10 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             packet.ReadBit("CharUndeleteEnabled");
             packet.ReadBit("RestrictedAccount");
             packet.ReadBit("TutorialsEnabled");
-            packet.ReadBit("Unk bit44"); // Also tutorials related
+            packet.ReadBit("NPETutorialsEnabled");
             packet.ReadBit("TwitterEnabled");
 
-            var bit61 = ClientVersion.AddedInVersion(ClientVersionBuild.V6_1_0_19702) ? (bool)packet.ReadBit("Unk bit61") : false;
+            var bit61 = ClientVersion.AddedInVersion(ClientVersionBuild.V6_1_0_19702) && packet.ReadBit("Unk bit61");
 
             if (hasEuropaTicketSystemStatus)
                 ReadCliEuropaTicketConfig(packet, "EuropaTicketSystemStatus");
@@ -215,7 +219,7 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             packet.ReadBit("CharUndeleteEnabled");
             packet.ReadBit("RestrictedAccount");
             packet.ReadBit("TutorialsEnabled");
-            packet.ReadBit("Unk bit44"); // Also tutorials related
+            packet.ReadBit("NPETutorialsEnabled");
             packet.ReadBit("TwitterEnabled");
             packet.ReadBit("CommerceSystemEnabled");
             packet.ReadBit("Unk67");
@@ -244,6 +248,9 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             packet.ReadInt32("DifficultyID");
             packet.ReadByte("IsTournamentRealm");
             packet.ReadTime("WeeklyReset");
+
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V6_2_0_20173))
+                packet.ReadBit("XRealmPvpAlert");
 
             var hasRestrictedAccountMaxLevel = packet.ReadBit("HasRestrictedAccountMaxLevel");
             var hasRestrictedAccountMaxMoney = packet.ReadBit("HasRestrictedAccountMaxMoney");
@@ -427,16 +434,33 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
         {
             packet.ReadBit("IsFullUpdate");
 
-            var int32 = packet.ReadInt32("ToySpellIDsCount");
+            var int32 = packet.ReadInt32("ToyItemIDsCount");
             var int16 = packet.ReadInt32("ToyIsFavoriteCount");
 
             for (int i = 0; i < int32; i++)
-                packet.ReadInt32("ToySpellIDs", i);
+                packet.ReadInt32("ToyItemID", i);
 
             packet.ResetBitReader();
 
             for (int i = 0; i < int16; i++)
                 packet.ReadBit("ToyIsFavorite", i);
+        }
+
+        [Parser(Opcode.SMSG_ACCOUNT_HEIRLOOM_UPDATE)]
+        public static void HandleAccountHeirloomUpdate(Packet packet)
+        {
+            packet.ReadBit("IsFullUpdate");
+
+            packet.ReadInt32("Unk");
+
+            var int32 = packet.ReadInt32("ItemCount");
+            var int16 = packet.ReadInt32("FlagsCount");
+
+            for (int i = 0; i < int32; i++)
+                packet.ReadInt32("ItemID", i);
+
+            for (int i = 0; i < int16; i++)
+                packet.ReadInt32("Flags", i);
         }
 
         [Parser(Opcode.SMSG_PLAY_SOUND)]
@@ -494,7 +518,9 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             Storage.PageTexts.Add(entry, pageText, packet.TimeSpan);
         }
 
+        [Parser(Opcode.SMSG_PLAY_ONE_SHOT_ANIM_KIT)]
         [Parser(Opcode.SMSG_SET_AI_ANIM_KIT)]
+        [Parser(Opcode.SMSG_SET_MELEE_ANIM_KIT)]
         public static void HandleSetAIAnimKit(Packet packet)
         {
             packet.ReadPackedGuid128("Unit");
@@ -542,12 +568,21 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
                 packet.ReadInt32E<Tutorial>("TutorialBit");
         }
 
-        [Parser(Opcode.CMSG_TUTORIAL_FLAG, ClientVersionBuild.V6_1_2_19802)]
+        [Parser(Opcode.CMSG_TUTORIAL_FLAG, ClientVersionBuild.V6_1_2_19802, ClientVersionBuild.V6_2_0_20173)]
         public static void HandleTutorialFlag612(Packet packet)
         {
             var action = packet.ReadBitsE<TutorialAction612>("TutorialAction", 2);
 
             if (action == TutorialAction612.Update)
+                packet.ReadInt32E<Tutorial>("TutorialBit");
+        }
+
+        [Parser(Opcode.CMSG_TUTORIAL_FLAG, ClientVersionBuild.V6_2_0_20173)]
+        public static void HandleTutorialFlag620(Packet packet)
+        {
+            var action = packet.ReadBitsE<TutorialAction620>("TutorialAction", 2);
+
+            if (action == TutorialAction620.Update)
                 packet.ReadInt32E<Tutorial>("TutorialBit");
         }
 
@@ -583,13 +618,6 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             packet.ReadBit("Paused");
         }
 
-        [Parser(Opcode.SMSG_PLAY_ONE_SHOT_ANIM_KIT)]
-        public static void HandlePlayOneShotAnimKit(Packet packet)
-        {
-            packet.ReadPackedGuid128("Unit");
-            packet.ReadUInt16("AnimKitID");
-        }
-
         [Parser(Opcode.CMSG_BUG_REPORT)]
         public static void HandleBugReport(Packet packet)
         {
@@ -607,8 +635,8 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
         {
             packet.ReadPackedGuid128("ResurrectOffererGUID");
 
-            packet.ReadInt32("ResurrectOffererVirtualRealmAddress");
-            packet.ReadInt32("PetNumber");
+            packet.ReadUInt32("ResurrectOffererVirtualRealmAddress");
+            packet.ReadUInt32("PetNumber");
             packet.ReadInt32("SpellID");
 
             var len = packet.ReadBits(6);
@@ -796,6 +824,13 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
         public static void HandleDurabilityDamageDeath(Packet packet)
         {
             packet.ReadInt32("Percent");
+        }
+
+        [Parser(Opcode.CMSG_TOY_SET_FAVORITE)]
+        public static void HandleToySetFavorite(Packet packet)
+        {
+            packet.ReadUInt32("ItemID");
+            packet.ReadBit("Favorite");
         }
     }
 }

@@ -228,8 +228,8 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("RewardXPDifficulty")]
         public uint RewardXPDifficulty;
 
-        [DBFieldName("Float10")]
-        public float Float10;
+        [DBFieldName("RewardXPMultiplier")]
+        public float RewardXPMultiplier;
 
         [DBFieldName("RewardMoney")]
         public int RewardMoney;
@@ -237,8 +237,8 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("RewardMoneyDifficulty")]
         public uint RewardMoneyDifficulty;
 
-        [DBFieldName("Float13")]
-        public float Float13;
+        [DBFieldName("RewardMoneyMultiplier")]
+        public float RewardMoneyMultiplier;
 
         [DBFieldName("RewardBonusMoney")]
         public uint RewardBonusMoney;
@@ -351,31 +351,31 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("AllowableRaces")]
         public int AllowableRaces;
 
-        [DBFieldName("LogTitle")]
+        [DBFieldName("LogTitle", LocaleConstant.enUS)]
         public string LogTitle;
 
-        [DBFieldName("LogDescription")]
+        [DBFieldName("LogDescription", LocaleConstant.enUS)]
         public string LogDescription;
 
-        [DBFieldName("QuestDescription")]
+        [DBFieldName("QuestDescription", LocaleConstant.enUS)]
         public string QuestDescription;
 
-        [DBFieldName("AreaDescription")]
+        [DBFieldName("AreaDescription", LocaleConstant.enUS)]
         public string AreaDescription;
 
-        [DBFieldName("PortraitGiverText")]
+        [DBFieldName("PortraitGiverText", LocaleConstant.enUS)]
         public string PortraitGiverText;
 
-        [DBFieldName("PortraitGiverName")]
+        [DBFieldName("PortraitGiverName", LocaleConstant.enUS)]
         public string PortraitGiverName;
 
-        [DBFieldName("PortraitTurnInText")]
+        [DBFieldName("PortraitTurnInText", LocaleConstant.enUS)]
         public string PortraitTurnInText;
 
-        [DBFieldName("PortraitTurnInName")]
+        [DBFieldName("PortraitTurnInName", LocaleConstant.enUS)]
         public string PortraitTurnInName;
 
-        [DBFieldName("QuestCompletionLog")]
+        [DBFieldName("QuestCompletionLog", LocaleConstant.enUS)]
         public string QuestCompletionLog;
 
         [DBFieldName("VerifiedBuild")]
@@ -408,7 +408,7 @@ namespace WowPacketParser.Store.Objects
 
         public List<QuestVisualEffect> VisualEffectIds;
 
-        [DBFieldName("Description")]
+        [DBFieldName("Description", LocaleConstant.enUS)]
         public string Description;
 
         [DBFieldName("VerifiedBuild")]

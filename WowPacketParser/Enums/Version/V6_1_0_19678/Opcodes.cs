@@ -1,4 +1,3 @@
-using System;
 using WowPacketParser.Misc;
 
 namespace WowPacketParser.Enums.Version.V6_1_0_19678
@@ -381,6 +380,7 @@ namespace WowPacketParser.Enums.Version.V6_1_0_19678
         {
             {Opcode.SMSG_ACCOUNT_CRITERIA_UPDATE, 0x0A7A},
             {Opcode.SMSG_ACCOUNT_DATA_TIMES, 0x15F3},
+            {Opcode.SMSG_ACCOUNT_HEIRLOOM_UPDATE, 0x1BB2},
             {Opcode.SMSG_ACCOUNT_MOUNT_UPDATE, 0x19A2},
             {Opcode.SMSG_ACCOUNT_TOYS_UPDATE, 0x1F1C},
             {Opcode.SMSG_ACHIEVEMENT_DELETED, 0x0B2C},
@@ -770,7 +770,7 @@ namespace WowPacketParser.Enums.Version.V6_1_0_19678
             {Opcode.SMSG_QUERY_PAGE_TEXT_RESPONSE, 0x1F5B},
             {Opcode.SMSG_QUERY_PETITION_RESPONSE, 0x04A2},
             {Opcode.SMSG_QUERY_TIME_RESPONSE, 0x13B1},
-            {Opcode.SMSG_QUESTGIVER_INVALID_QUEST, 0x01AD},
+            {Opcode.SMSG_QUEST_GIVER_INVALID_QUEST, 0x01AD},
             {Opcode.SMSG_QUEST_GIVER_OFFER_REWARD_MESSAGE, 0x05A0},
             {Opcode.SMSG_QUEST_GIVER_QUEST_COMPLETE, 0x01A7},
             {Opcode.SMSG_QUEST_GIVER_QUEST_DETAILS, 0x0925},

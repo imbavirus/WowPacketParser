@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections.Generic;
+using System.Globalization;
 using WowPacketParser.Enums.Version.V3_3_5a_12340;
 using WowPacketParser.Enums.Version.V4_0_3_13329;
 using WowPacketParser.Enums.Version.V4_0_6_13596;
@@ -23,6 +24,8 @@ using WowPacketParser.Enums.Version.V6_0_2_19033;
 using WowPacketParser.Enums.Version.V6_0_3_19103;
 using WowPacketParser.Enums.Version.V6_1_0_19678;
 using WowPacketParser.Enums.Version.V6_1_2_19802;
+using WowPacketParser.Enums.Version.V6_2_0_20173;
+using WowPacketParser.Enums.Version.V6_2_2_20444;
 using WowPacketParser.Misc;
 
 namespace WowPacketParser.Enums.Version
@@ -33,11 +36,29 @@ namespace WowPacketParser.Enums.Version
         private static BiDictionary<Opcode, int> ClientDict = GetOpcodeDictionary(ClientVersion.Build, Direction.ClientToServer);
         private static BiDictionary<Opcode, int> MiscDict = GetOpcodeDictionary(ClientVersion.Build, Direction.Bidirectional);
 
+        private static Dictionary<Opcode, string> ServerNameDict = new Dictionary<Opcode, string>();
+        private static Dictionary<Opcode, string> ClientNameDict = new Dictionary<Opcode, string>();
+        private static Dictionary<Opcode, string> MiscNameDict = new Dictionary<Opcode, string>();
+
         public static void InitializeOpcodeDictionary()
         {
             ServerDict = GetOpcodeDictionary(ClientVersion.Build, Direction.ServerToClient);
             ClientDict = GetOpcodeDictionary(ClientVersion.Build, Direction.ClientToServer);
             MiscDict = GetOpcodeDictionary(ClientVersion.Build, Direction.Bidirectional);
+
+            InitializeOpcodeNameDictionary();
+        }
+
+        private static void InitializeOpcodeNameDictionary()
+        {
+            foreach (var o in ServerDict)
+                ServerNameDict.Add(o.Key, o.Key.ToString());
+
+            foreach (var o in ClientDict)
+                ClientNameDict.Add(o.Key, o.Key.ToString());
+
+            foreach (var o in MiscDict)
+                MiscNameDict.Add(o.Key, o.Key.ToString());
         }
 
         public static BiDictionary<Opcode, int> GetOpcodeDictionary(ClientVersionBuild build, Direction direction)
@@ -194,6 +215,20 @@ namespace WowPacketParser.Enums.Version
                 {
                     return Opcodes_6_1_2.Opcodes(direction);
                 }
+                case ClientVersionBuild.V6_2_0_20173:
+                case ClientVersionBuild.V6_2_0_20182:
+                case ClientVersionBuild.V6_2_0_20201:
+                case ClientVersionBuild.V6_2_0_20216:
+                case ClientVersionBuild.V6_2_0_20253:
+                case ClientVersionBuild.V6_2_0_20338:
+                {
+                    return Opcodes_6_2_0.Opcodes(direction);
+                }
+                case ClientVersionBuild.V6_2_2_20444:
+                case ClientVersionBuild.V6_2_2a_20490:
+                {
+                    return Opcodes_6_2_2.Opcodes(direction);
+                }
                 default:
                 {
                     return Opcodes_3_3_5.Opcodes(direction);
@@ -235,7 +270,13 @@ namespace WowPacketParser.Enums.Version
             var opc = GetOpcode(opcodeId, direction);
 
             if (opc != 0)
-                return opc.ToString();
+            {
+                if (direction == Direction.ClientToServer || direction == Direction.BNClientToServer)
+                    return ClientNameDict[opc];
+                if (direction == Direction.ServerToClient || direction == Direction.BNServerToClient)
+                    return ServerNameDict[opc];
+                return MiscNameDict[opc];
+            }
 
             if (hex)
                 return "0x" + opcodeId.ToString("X4", CultureInfo.InvariantCulture);

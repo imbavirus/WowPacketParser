@@ -114,7 +114,15 @@ namespace WowPacketParser.Misc
             new KeyValuePair<ClientVersionBuild, DateTime>(ClientVersionBuild.V6_1_0_19702, new DateTime(2015, 02, 26)),
             new KeyValuePair<ClientVersionBuild, DateTime>(ClientVersionBuild.V6_1_2_19802, new DateTime(2015, 03, 21)),
             new KeyValuePair<ClientVersionBuild, DateTime>(ClientVersionBuild.V6_1_2_19831, new DateTime(2015, 03, 31)),
-            new KeyValuePair<ClientVersionBuild, DateTime>(ClientVersionBuild.V6_1_2_19865, new DateTime(2015, 04, 03))
+            new KeyValuePair<ClientVersionBuild, DateTime>(ClientVersionBuild.V6_1_2_19865, new DateTime(2015, 04, 03)),
+            new KeyValuePair<ClientVersionBuild, DateTime>(ClientVersionBuild.V6_2_0_20173, new DateTime(2015, 06, 22)),
+            new KeyValuePair<ClientVersionBuild, DateTime>(ClientVersionBuild.V6_2_0_20182, new DateTime(2015, 06, 25)),
+            new KeyValuePair<ClientVersionBuild, DateTime>(ClientVersionBuild.V6_2_0_20201, new DateTime(2015, 06, 26)),
+            new KeyValuePair<ClientVersionBuild, DateTime>(ClientVersionBuild.V6_2_0_20216, new DateTime(2015, 07, 02)),
+            new KeyValuePair<ClientVersionBuild, DateTime>(ClientVersionBuild.V6_2_0_20253, new DateTime(2015, 07, 09)),
+            new KeyValuePair<ClientVersionBuild, DateTime>(ClientVersionBuild.V6_2_0_20338, new DateTime(2015, 07, 27)),
+            new KeyValuePair<ClientVersionBuild, DateTime>(ClientVersionBuild.V6_2_2_20444, new DateTime(2015, 09, 01)),
+            new KeyValuePair<ClientVersionBuild, DateTime>(ClientVersionBuild.V6_2_2a_20490, new DateTime(2015, 09, 09))
         };
 
         private static ClientType _expansion;
@@ -214,6 +222,14 @@ namespace WowPacketParser.Misc
                     case ClientVersionBuild.V6_1_2_19802:
                     case ClientVersionBuild.V6_1_2_19831:
                     case ClientVersionBuild.V6_1_2_19865:
+                    case ClientVersionBuild.V6_2_0_20173:
+                    case ClientVersionBuild.V6_2_0_20182:
+                    case ClientVersionBuild.V6_2_0_20201:
+                    case ClientVersionBuild.V6_2_0_20216:
+                    case ClientVersionBuild.V6_2_0_20253:
+                    case ClientVersionBuild.V6_2_0_20338:
+                    case ClientVersionBuild.V6_2_2_20444:
+                    case ClientVersionBuild.V6_2_2a_20490:
                         return ClientVersionBuild.V6_0_2_19033;
                     default:
                         return Build;
@@ -254,7 +270,7 @@ namespace WowPacketParser.Misc
 
             for (var i = 1; i < ClientBuilds.Length; i++)
                 if (ClientBuilds[i].Value >= time)
-                    return ClientBuilds[i - 1].Key;
+                    return ClientBuilds[i].Key;
 
             return ClientBuilds[ClientBuilds.Length - 1].Key;
         }
@@ -272,8 +288,9 @@ namespace WowPacketParser.Misc
             UpdateFields.ResetUFDictionaries();
             try
             {
-                var asm = Assembly.LoadFrom(string.Format(AppDomain.CurrentDomain.BaseDirectory + "/" + "WowPacketParserModule.{0}.dll", VersionDefiningBuild));
-                Trace.WriteLine(string.Format("Loading module WowPacketParserModule.{0}.dll", VersionDefiningBuild));
+                var asm = Assembly.Load($"WowPacketParserModule.{VersionDefiningBuild}");
+                Trace.WriteLine($"Loading module WowPacketParserModule.{VersionDefiningBuild}.dll");
+
                 Handler.LoadHandlers(asm, VersionDefiningBuild);
 
                 // This is a huge hack to handle the abnormal situation that appeared with builds 6.0 and 6.1 having mostly the same packet structures

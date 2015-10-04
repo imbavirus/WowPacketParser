@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -55,6 +54,8 @@ namespace WowPacketParser.SQL
         public static string EscapeString(string str)
         {
             str = MySqlHelper.DoubleQuoteString(str);
+            str = str.Replace(Environment.NewLine, @"\n");
+            str = str.Replace("’’", "’"); // french is gay ... 
 
             // prevent double escaping
             return str.Replace("\"\"", "\"");
@@ -424,8 +425,10 @@ namespace WowPacketParser.SQL
         /// <param name="dict2">Dictionary retrieved from  DB</param>
         /// <param name="storeType1">(T) Are we dealing with Spells, Quests, Units, ...?</param>
         /// <param name="storeType2">(TG) Are we dealing with Spells, Quests, Units, ...?</param>
+        /// <param name="storeType3">(TH) Are we dealing with Spells, Quests, Units, ...?</param>
         /// <param name="primaryKeyName1">The name of the first primary key</param>
         /// <param name="primaryKeyName2">The name of the second primary key</param>
+        /// <param name="primaryKeyName3">The name of the third primary key</param>
         /// <returns>A string containing full SQL queries</returns>
         public static string CompareDicts<T, TG, TH, TK>(StoreDictionary<Tuple<T, TG, TH>, TK> dict1, StoreDictionary<Tuple<T, TG, TH>, TK> dict2, StoreNameType storeType1, StoreNameType storeType2, StoreNameType storeType3, string primaryKeyName1, string primaryKeyName2, string primaryKeyName3)
         {
