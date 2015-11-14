@@ -133,8 +133,8 @@
     <Compile Include="Enums\BattlegroundListFlags.cs" />
     <Compile Include="Enums\BattlegroundStatus.cs" />
     <Compile Include="Enums\BattlegroundUpdateFlags.cs" />
+    <Compile Include="Enums\Battlenet\Command.cs" />
     <Compile Include="Enums\Battlenet\BattlenetChannel.cs" />
-    <Compile Include="Enums\Battlenet\BattlenetOpcode.cs" />
     <Compile Include="Enums\BillingFlag.cs" />
     <Compile Include="Enums\CalendarError.cs" />
     <Compile Include="Enums\CalendarEventStatus.cs" />
@@ -152,6 +152,7 @@
     <Compile Include="Enums\ChatRestrictionType.cs" />
     <Compile Include="Enums\ChatTag.cs" />
     <Compile Include="Enums\Class.cs" />
+    <Compile Include="Enums\FileCompression.cs" />
     <Compile Include="Enums\ClassMask.cs" />
     <Compile Include="Enums\ClientType.cs" />
     <Compile Include="Enums\ClientVersionBuild.cs" />
@@ -381,6 +382,7 @@
     <Compile Include="Loading\BinaryPacketReader.cs" />
     <Compile Include="Loading\IPacketReader.cs" />
     <Compile Include="Loading\Reader.cs" />
+    <Compile Include="Misc\BattlenetBitStream.cs" />
     <Compile Include="Misc\BattlenetPacket.cs" />
     <Compile Include="Misc\BattlenetPacketHeader.cs" />
     <Compile Include="Misc\BiDictionary.cs" />
@@ -389,6 +391,7 @@
     <Compile Include="Misc\ConcurrentPriorityQueue.cs" />
     <Compile Include="Misc\Configuration.cs" />
     <Compile Include="Misc\Extensions.cs" />
+    <Compile Include="Misc\FileCompressionAttribute.cs" />
     <Compile Include="Misc\Filters.cs" />
     <Compile Include="Misc\WowGuid.cs" />
     <Compile Include="Misc\LfgEntry.cs" />
@@ -419,7 +422,6 @@
     <Compile Include="Parsing\Parsers\ArchaelogyHandler.cs" />
     <Compile Include="Parsing\Parsers\AuctionHouseHandler.cs" />
     <Compile Include="Parsing\Parsers\BattlegroundHandler.cs" />
-    <Compile Include="Parsing\Parsers\BattlenetHandler.cs" />
     <Compile Include="Parsing\Parsers\BattlenetModuleHandler.cs" />
     <Compile Include="Parsing\Parsers\CalendarHandler.cs" />
     <Compile Include="Parsing\Parsers\ChannelHandler.cs" />
